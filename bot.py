@@ -1,4 +1,5 @@
-﻿import os
+import os
+import sys
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
@@ -6,7 +7,14 @@ from googlesearch import search
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes
 
-TOKEN = os.getenv("BOT_TOKEN", "8768981789:AAFiFsfkCv2q8sbeIFaKLjcaiuYWvl-diCA")
+print("=== Загрузка бота ===")
+print("Python version:", sys.version)
+print("Токен загружен?", bool(os.getenv("BOT_TOKEN")))
+
+TOKEN = os.getenv("BOT_TOKEN")
+if not TOKEN:
+    print("❌ Ошибка: переменная BOT_TOKEN не установлена!")
+    sys.exit(1)
 
 SITES = [
     "zanomom.ru",
@@ -80,10 +88,17 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await status_msg.edit_text("✅ На проверенных сайтах ничего не найдено. Возможно, номер чистый.")
 
 def main():
+    print("Создаю приложение...")
     app = Application.builder().token(TOKEN).build()
+    print("Добавляю обработчик...")
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_number))
     print("Бот запущен. Жду номер...")
     app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"❌ Критическая ошибка: {e}")
+        import traceback
+        traceback.print_exc()
