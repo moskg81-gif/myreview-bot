@@ -7,9 +7,13 @@ from googlesearch import search
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes
 
+
+sys.stderr = open('/tmp/errors.log', 'w')
+sys.stdout = open('/tmp/output.log', 'w')
+
 print("=== Загрузка бота ===")
 print("Python version:", sys.version)
-print("Токен загружен?", bool(os.getenv("BOT_TOKEN")))
+print("Токен загружен:", bool(os.getenv("BOT_TOKEN")))
 
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
@@ -102,3 +106,6 @@ if __name__ == "__main__":
         print(f"❌ Критическая ошибка: {e}")
         import traceback
         traceback.print_exc()
+
+
+      
